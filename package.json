@@ -1,0 +1,67 @@
+{
+  "name": "git-kick",
+  "displayName": "git-kick",
+  "description": "An extension to generate a commit message using AI based on the changes made since previous commit.",
+  "publisher": "rbhagat32",
+  "version": "0.0.1",
+  "type": "module",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "icon": "./assets/icon.png",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.commit",
+        "title": "Git-Kick"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "extension.commit",
+          "when": "resourceScheme == file",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "extension.commit",
+          "when": "editorTextFocus"
+        }
+      ]
+    }
+  },
+  "activationEvents": [
+    "onStartupFinished",
+    "workspaceContains:.git"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.17.47",
+    "@types/node-fetch": "^2.6.12",
+    "@types/vscode": "^1.100.0",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.25.1",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "node-fetch": "^3.3.2"
+  }
+}
