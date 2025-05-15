@@ -10,9 +10,9 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.StatusBarAlignment.Right,
     900
   );
-  statusBarItem.text = "$(git-commit) Git-Kick";
+  statusBarItem.text = "$(git-compare) Git-Kick";
   statusBarItem.command = "extension.commit";
-  statusBarItem.tooltip = "Generate commit message and commit";
+  statusBarItem.tooltip = "AI generated commit messages";
   statusBarItem.show();
   context.subscriptions.push(statusBarItem);
 
