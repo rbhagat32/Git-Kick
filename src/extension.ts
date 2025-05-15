@@ -7,7 +7,8 @@ const execAsync = promisify(exec);
 
 export function activate(context: vscode.ExtensionContext) {
   const statusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Left
+    vscode.StatusBarAlignment.Right,
+    900
   );
   statusBarItem.text = "$(git-commit) Git-Kick";
   statusBarItem.command = "extension.commit";

@@ -24,14 +24,8 @@
       "editor/title": [
         {
           "command": "extension.commit",
-          "when": "resourceScheme == file",
+          "when": "true",
           "group": "navigation"
-        }
-      ],
-      "commandPalette": [
-        {
-          "command": "extension.commit",
-          "when": "editorTextFocus"
         }
       ]
     }
