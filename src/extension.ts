@@ -52,10 +52,25 @@ export function activate(context: vscode.ExtensionContext) {
           },
           async () => {
             try {
-              const commitMessage = await getCommitMessageFromGemini(
+              let commitMessage = await getCommitMessageFromGemini(
                 diff,
                 GEMINI_API_KEY
               );
+
+              const editCommitMessage = await vscode.window.showInputBox({
+                prompt: "Edit commit message",
+                value: commitMessage,
+                placeHolder: "Enter your commit message",
+              });
+
+              if (editCommitMessage === "") {
+                vscode.window.showErrorMessage(
+                  "Commit message cannot be empty."
+                );
+                return;
+              }
+
+              commitMessage = editCommitMessage || commitMessage;
 
               await execAsync(`git add .`, { cwd: workspacePath });
               await execAsync(
