@@ -13,6 +13,10 @@
   ],
   "main": "./out/extension.js",
   "icon": "./assets/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rbhagat32/Git-Kick"
+  },
   "contributes": {
     "commands": [
       {
