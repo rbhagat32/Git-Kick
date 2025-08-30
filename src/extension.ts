@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { exec } from "child_process";
 import { promisify } from "util";
-import { getCommitMessageFromGemini } from "./utils/generate-message.js";
+import { getCommitMessageFromDeepseek } from "./utils/generate-message.js";
 
 const execAsync = promisify(exec);
 
@@ -27,9 +27,10 @@ export function activate(context: vscode.ExtensionContext) {
         }
         const workspacePath = folders[0].uri.fsPath;
 
-        const GEMINI_API_KEY = "AIzaSyAV9vjvO6DIph-hIP03Gg3RclNr8GZgc7M";
-        if (!GEMINI_API_KEY) {
-          vscode.window.showErrorMessage("Please set GEMINI_API_KEY in .env");
+        const DEEPSEEK_API_KEY =
+          "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";
+        if (!DEEPSEEK_API_KEY) {
+          vscode.window.showErrorMessage("Please set DEEPSEEK_API_KEY in .env");
           return;
         }
 
@@ -52,9 +53,9 @@ export function activate(context: vscode.ExtensionContext) {
           },
           async () => {
             try {
-              let commitMessage = await getCommitMessageFromGemini(
+              let commitMessage = await getCommitMessageFromDeepseek(
                 diff,
-                GEMINI_API_KEY
+                DEEPSEEK_API_KEY
               );
 
               const editCommitMessage = await vscode.window.showInputBox({
@@ -63,14 +64,19 @@ export function activate(context: vscode.ExtensionContext) {
                 placeHolder: "Enter your commit message",
               });
 
-              if (editCommitMessage === "") {
+              if (editCommitMessage === undefined) {
+                vscode.window.showInformationMessage("Commit cancelled.");
+                return;
+              }
+
+              if (editCommitMessage.trim() === "") {
                 vscode.window.showErrorMessage(
                   "Commit message cannot be empty."
                 );
                 return;
               }
 
-              commitMessage = editCommitMessage || commitMessage;
+              commitMessage = editCommitMessage;
 
               await execAsync(`git add .`, { cwd: workspacePath });
               await execAsync(
@@ -85,7 +91,7 @@ export function activate(context: vscode.ExtensionContext) {
               vscode.window.showErrorMessage(
                 `Error generating commit message: ${err.message || err}`
               );
-              console.error("Gemini API or commit error:", err);
+              console.error("Deepseek API or commit error:", err);
             }
           }
         );
