@@ -3,7 +3,7 @@
   "displayName": "git-kick",
   "description": "An extension to generate a commit message using AI based on the changes made since previous commit.",
   "publisher": "rbhagat32",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "engines": {
     "vscode": "^1.100.0"
