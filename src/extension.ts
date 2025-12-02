@@ -30,11 +30,11 @@ export function activate(context: vscode.ExtensionContext) {
         await vscode.window.withProgress(
           {
             location: vscode.ProgressLocation.Notification,
-            title: "Generating commit message...",
+            title: "Confirm commit message...",
             cancellable: false,
           },
           async () => {
-            let commitMessage = ".";
+            let commitMessage = "git-kick";
 
             const editedCommitMessage = await vscode.window.showInputBox({
               prompt: "Edit commit message",
