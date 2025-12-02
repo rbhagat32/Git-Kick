@@ -1,7 +1,6 @@
-import * as vscode from "vscode";
 import { exec } from "child_process";
 import { promisify } from "util";
-import { getCommitMessageFromDeepseek } from "./utils/generate-message.js";
+import * as vscode from "vscode";
 
 const execAsync = promisify(exec);
 
@@ -25,25 +24,8 @@ export function activate(context: vscode.ExtensionContext) {
           vscode.window.showErrorMessage("No workspace folder is open.");
           return;
         }
+
         const workspacePath = folders[0].uri.fsPath;
-
-        const DEEPSEEK_API_KEY =
-          "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";
-        if (!DEEPSEEK_API_KEY) {
-          vscode.window.showErrorMessage("Please set DEEPSEEK_API_KEY in .env");
-          return;
-        }
-
-        const { stdout: diff } = await execAsync("git diff HEAD", {
-          cwd: workspacePath,
-        });
-
-        if (!diff.trim()) {
-          vscode.window.showErrorMessage(
-            "No changes detected since last commit."
-          );
-          return;
-        }
 
         await vscode.window.withProgress(
           {
@@ -52,47 +34,35 @@ export function activate(context: vscode.ExtensionContext) {
             cancellable: false,
           },
           async () => {
-            try {
-              let commitMessage = await getCommitMessageFromDeepseek(
-                diff,
-                DEEPSEEK_API_KEY
-              );
+            let commitMessage = ".";
 
-              const editCommitMessage = await vscode.window.showInputBox({
-                prompt: "Edit commit message",
-                value: commitMessage,
-                placeHolder: "Enter your commit message",
-              });
+            const editedCommitMessage = await vscode.window.showInputBox({
+              prompt: "Edit commit message",
+              value: commitMessage,
+              placeHolder: "Enter your commit message",
+            });
 
-              if (editCommitMessage === undefined) {
-                vscode.window.showInformationMessage("Commit cancelled.");
-                return;
-              }
-
-              if (editCommitMessage.trim() === "") {
-                vscode.window.showErrorMessage(
-                  "Commit message cannot be empty."
-                );
-                return;
-              }
-
-              commitMessage = editCommitMessage;
-
-              await execAsync(`git add .`, { cwd: workspacePath });
-              await execAsync(
-                `git commit -m "${commitMessage.replace(/"/g, '\\"')}"`,
-                { cwd: workspacePath }
-              );
-
-              vscode.window.showInformationMessage(
-                `Committed with message: "${commitMessage}"`
-              );
-            } catch (err: any) {
-              vscode.window.showErrorMessage(
-                `Error generating commit message: ${err.message || err}`
-              );
-              console.error("Deepseek API or commit error:", err);
+            if (editedCommitMessage === undefined) {
+              vscode.window.showInformationMessage("Commit cancelled.");
+              return;
             }
+
+            if (editedCommitMessage.trim() === "") {
+              vscode.window.showErrorMessage("Commit message cannot be empty.");
+              return;
+            }
+
+            commitMessage = editedCommitMessage;
+
+            await execAsync(`git add .`, { cwd: workspacePath });
+            await execAsync(
+              `git commit -m "${commitMessage.replace(/"/g, '\\"')}"`,
+              { cwd: workspacePath }
+            );
+
+            vscode.window.showInformationMessage(
+              `Code committed successfully.`
+            );
           }
         );
       } catch (error: any) {
